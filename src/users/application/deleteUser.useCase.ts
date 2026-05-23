@@ -1,4 +1,5 @@
-import { User } from "../domain/user";
+import { UserAlreadyDeletedError } from "../domain/errors/UserAlreadyDeletedError";
+import { UserNotFoundError } from "../domain/errors/UserNotFoundError";
 import { UserRepository } from "../domain/userRepository";
 
 export class DeleteUserUseCase {
@@ -6,14 +7,8 @@ export class DeleteUserUseCase {
 
     async run(id: string): Promise<void> {
         const userExisted = await this.userRepository.findById(id);
-        if (!userExisted) {
-            throw new Error('User does not exist')
-        }
-
-        if (userExisted.deletedAt !== null) {
-            throw new Error('User is already deleted');
-        }
-
+        if (!userExisted) throw new UserNotFoundError(id)
+        if (userExisted.deletedAt !== null) throw new UserAlreadyDeletedError(id);
         userExisted.markAsDeleted();
         await this.userRepository.update(userExisted)
 

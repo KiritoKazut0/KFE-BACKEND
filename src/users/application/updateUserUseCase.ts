@@ -1,3 +1,4 @@
+import { UserNotFoundError } from "../domain/errors/UserNotFoundError";
 import { User, UserRole } from "../domain/user";
 import { UserRepository } from "../domain/userRepository";
 
@@ -12,9 +13,8 @@ export class UpdateUserUseCase {
     async run (id: string, user: UpdateUser): Promise<User> {
         const userExisted = await this.userRepository.findById(id);
         
-        if (!userExisted){
-            throw new Error ('User does not exist');
-        }
+        if (!userExisted) throw new UserNotFoundError(id);
+        
         if (user.name) {
             userExisted.name = user.name;
             userExisted.updatedAt = new Date(); 

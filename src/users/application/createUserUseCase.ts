@@ -1,9 +1,10 @@
+import { UserAlreadyExistsError } from "../domain/errors/UserAlreadyExistsError";
 import { User, UserRole } from "../domain/user";
 import { UserRepository } from "../domain/userRepository";
 import { HashService } from "./service/hashService";
-import * as crypto from "crypto"
+import * as crypto from "node:crypto"
 
-interface createUser {
+interface CreateUser {
     name: string;
     email: string;
     password: string;
@@ -16,11 +17,11 @@ export class CreateUserUseCase {
         private readonly hashService: HashService
     ) { }
 
-    async run(user: createUser): Promise<User> {
+    async run(user: CreateUser): Promise<User> {
 
         const userExisted = await this.userRepository.findByEmail(user.email);
         if (userExisted) {
-            throw new Error(`El correo ${user.email} ya esta registrado`);
+            throw new UserAlreadyExistsError(userExisted.email)
         }
 
         const hashedPassword = await this.hashService.hash(user.password);
