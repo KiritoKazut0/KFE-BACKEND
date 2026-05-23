@@ -10,7 +10,7 @@
 
 
     @Controller('auth')
-    @ApiTags("auth")
+    @ApiTags("Autenticación")
     export class AuthController {
         constructor(
             private readonly accessUseCase: AccessUseCase,

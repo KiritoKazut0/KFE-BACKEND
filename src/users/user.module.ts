@@ -9,11 +9,7 @@ import { FindByIDUserUseCase } from "./application/findByIdUserUseCase";
 import { UpdateUserUseCase } from "./application/updateUserUseCase";
 import { DeleteUserUseCase } from "./application/deleteUser.useCase";
 import { ListUserUseCase } from "./application/listUserUseCase";
-import { UserRepository } from "./domain/userRepository";
 import { SecurityModule } from "../core/security/security.module";
-import { HashService } from "../shared/application/service/hashService";
-
-
 @Module({
     imports: [
         TypeOrmModule.forFeature([UserModel]),
@@ -27,7 +23,7 @@ import { HashService } from "../shared/application/service/hashService";
         HashServiceImpl,
         {
          provide: ListUserUseCase,
-         useFactory: (userRepository: UserRepository) => {
+         useFactory: (userRepository: MysqlUserRepository) => {
             return new ListUserUseCase(userRepository)
          },
          inject: [MysqlUserRepository]
@@ -35,7 +31,7 @@ import { HashService } from "../shared/application/service/hashService";
 
         {
             provide: CreateUserUseCase,
-            useFactory: (userRepository: MysqlUserRepository, hashService: HashService) => {
+            useFactory: (userRepository: MysqlUserRepository, hashService: HashServiceImpl) => {
                 return new CreateUserUseCase(userRepository, hashService)
             },
             inject: [MysqlUserRepository, HashServiceImpl]

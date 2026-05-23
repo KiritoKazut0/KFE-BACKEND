@@ -18,6 +18,7 @@ async function bootstrap() {
     .setTitle("KFE - API")
     .setDescription("Punto de Venta para KFE")
     .setVersion("1.0")
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

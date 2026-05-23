@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User, type UserRole } from '../../domain/user';
+import { User, UserRole } from '../../domain/user';
 
 
 export class UserDataDto {
