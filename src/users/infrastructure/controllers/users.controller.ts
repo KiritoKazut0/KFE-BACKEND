@@ -1,16 +1,18 @@
-import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, ParseUUIDPipe, Patch, Post, UseFilters } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, ParseUUIDPipe, Patch, Post, UseFilters, UseGuards } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-
 import { ListUserUseCase } from "../../application/listUserUseCase";
 import { CreateUserUseCase } from "../../application/createUserUseCase";
 import { DeleteUserUseCase } from "../../application/deleteUser.useCase";
 import { FindByIDUserUseCase } from "../../application/findByIdUserUseCase";
 import { UpdateUserUseCase } from "../../application/updateUserUseCase";
-
 import CreateUserDto from "../dtos/createUser.dto";
 import UpdateUserDto from "../dtos/updateUser.dto";
 import { UserListResponseDto, UserResponseDto } from "../dtos/userResponse.dto";
 import { DomainErrorFilter } from "../filters/domain-error.filter";
+import { AuthGuard } from "../../../core/security/guards/auth.guard";
+import { RolesGuard } from "../../../core/security/guards/roles.guard";
+import { Roles } from "../../../core/security/decorators/roles.decorator";
+import { UserRole } from "../../domain/user";
 
 @Controller('users')
 @ApiTags("users")
@@ -25,6 +27,8 @@ export class UserController {
         private readonly deleteUserUseCase: DeleteUserUseCase
     ) { }
 
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN, UserRole.MANAGER)
     @Get()
     @HttpCode(200)
     @ApiOperation({ summary: 'Obtener la lista de todos los empleados activos' })
@@ -34,6 +38,8 @@ export class UserController {
         return UserListResponseDto.success(users, 'Usuarios listados exitosamente');
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
     @Post('/')
     @HttpCode(201)
     @ApiOperation({ summary: 'Crear un nuevo empleado en KFE' })
@@ -43,6 +49,8 @@ export class UserController {
         return UserResponseDto.success(user, 'Usuario creado exitosamente en el sistema');
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN, UserRole.MANAGER)
     @Get('/:id')
     @HttpCode(200)
     @ApiOperation({ summary: 'Buscar empleado en KFE por ID' })
@@ -55,6 +63,8 @@ export class UserController {
         return UserResponseDto.success(user, 'Usuario encontrado');
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN, UserRole.MANAGER)
     @Patch('/:id')
     @HttpCode(200)
     @ApiOperation({ summary: 'Actualizar datos de un empleado en KFE' })
@@ -67,6 +77,8 @@ export class UserController {
         return UserResponseDto.success(user, 'Datos actualizados del empleado');
     }
 
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN, UserRole.MANAGER)
     @Delete('/:id')
     @HttpCode(200)
     @ApiOperation({ summary: 'Dar de baja a un usuario' })

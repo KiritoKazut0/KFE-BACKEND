@@ -3,18 +3,21 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserController } from "./infrastructure/controllers/users.controller";
 import { UserModel } from "./infrastructure/persistence/user.model";
 import { MysqlUserRepository } from "./infrastructure/persistence/mysql-user.repository";
-import HashServiceImpl from "./infrastructure/services/hashServiceImpl";
+import HashServiceImpl from "../shared/infrastructure/service/hashServiceImpl";
 import { CreateUserUseCase } from "./application/createUserUseCase";
 import { FindByIDUserUseCase } from "./application/findByIdUserUseCase";
 import { UpdateUserUseCase } from "./application/updateUserUseCase";
 import { DeleteUserUseCase } from "./application/deleteUser.useCase";
 import { ListUserUseCase } from "./application/listUserUseCase";
 import { UserRepository } from "./domain/userRepository";
+import { SecurityModule } from "../core/security/security.module";
+import { HashService } from "../shared/application/service/hashService";
 
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([UserModel])
+        TypeOrmModule.forFeature([UserModel]),
+        SecurityModule
     ],
     controllers: [
         UserController
@@ -22,18 +25,17 @@ import { UserRepository } from "./domain/userRepository";
     providers: [
         MysqlUserRepository,
         HashServiceImpl,
-
         {
          provide: ListUserUseCase,
          useFactory: (userRepository: UserRepository) => {
             return new ListUserUseCase(userRepository)
          },
-         inject: [MysqlUserRepository, HashServiceImpl]
+         inject: [MysqlUserRepository]
         },
 
         {
             provide: CreateUserUseCase,
-            useFactory: (userRepository: MysqlUserRepository, hashService: HashServiceImpl) => {
+            useFactory: (userRepository: MysqlUserRepository, hashService: HashService) => {
                 return new CreateUserUseCase(userRepository, hashService)
             },
             inject: [MysqlUserRepository, HashServiceImpl]
@@ -60,7 +62,11 @@ import { UserRepository } from "./domain/userRepository";
             inject: [MysqlUserRepository] 
         }
     ],
-    exports: []
+    exports: [
+        MysqlUserRepository,
+        HashServiceImpl,
+        CreateUserUseCase
+    ]
 
 })
 export class UserModule { }

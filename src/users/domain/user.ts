@@ -1,5 +1,9 @@
 
-export type UserRole = 'MANAGER' | 'CASHIER' | 'ADMIN';
+export enum UserRole {
+    MANAGER = "MANAGER",
+    CASHIER = "CASHIER",
+    ADMIN = "ADMIN"
+}
 
 export class User {
     constructor(

@@ -1,7 +1,7 @@
 import { UserAlreadyExistsError } from "../domain/errors/UserAlreadyExistsError";
 import { User, UserRole } from "../domain/user";
 import { UserRepository } from "../domain/userRepository";
-import { HashService } from "./service/hashService";
+import { HashService } from "../../shared/application/service/hashService";
 import * as crypto from "node:crypto"
 
 interface CreateUser {
