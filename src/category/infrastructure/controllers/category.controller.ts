@@ -21,7 +21,7 @@ export class CategoriesController {
     ) {}
 
     @Post()
-    @Roles(UserRole.ADMIN, UserRole.MANAGER) 
+    @Roles(UserRole.ADMIN) 
     @ApiOperation({ summary: "Crear una nueva categoría" })
     @ApiResponse({ status: 201, description: "Categoría creada", type: CategoryResponseDto })
     async create(@Body() dto: CreateCategoryDto): Promise<CategoryResponseDto> {
