@@ -5,6 +5,7 @@ import { UserModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { ProductsModule } from './products/product.module';
+import { OrdersModule } from './orders/order.module';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { ProductsModule } from './products/product.module';
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: true,
+        // synchronize: true,
         extra: {
           connectionLimit: 10,
           waitForConnections: true,
@@ -35,7 +36,8 @@ import { ProductsModule } from './products/product.module';
     UserModule,
     AuthModule,
     CategoryModule,
-    ProductsModule
+    ProductsModule,
+    OrdersModule
   ],
 })
 export class AppModule {}
